@@ -17,10 +17,10 @@ class Update extends core.Resource {
     /** Downloads the updater package and installs it */
     async downloadAndInstall(onEvent) {
         const channel = new core.Channel();
-        if (onEvent) {
+        if (onEvent != null) {
             channel.onmessage = onEvent;
         }
-        return core.invoke("plugin:updater|download_and_install", {
+        await core.invoke("plugin:updater|download_and_install", {
             onEvent: channel,
             rid: this.rid,
         });
@@ -28,10 +28,10 @@ class Update extends core.Resource {
 }
 /** Check for updates, resolves to `null` if no updates are available */
 async function check(options) {
-    if (options?.headers) {
+    if (options?.headers != null) {
         options.headers = Array.from(new Headers(options.headers).entries());
     }
-    return core.invoke("plugin:updater|check", {
+    return await core.invoke("plugin:updater|check", {
         ...options,
     }).then((meta) => (meta.available ? new Update(meta) : null));
 }
