@@ -15,7 +15,7 @@ class Update extends Resource {
     /** Downloads the updater package and installs it */
     async downloadAndInstall(onEvent) {
         const channel = new Channel();
-        if (onEvent != null) {
+        if (onEvent) {
             channel.onmessage = onEvent;
         }
         await invoke("plugin:updater|download_and_install", {
@@ -26,7 +26,7 @@ class Update extends Resource {
 }
 /** Check for updates, resolves to `null` if no updates are available */
 async function check(options) {
-    if (options?.headers != null) {
+    if (options?.headers) {
         options.headers = Array.from(new Headers(options.headers).entries());
     }
     return await invoke("plugin:updater|check", {
