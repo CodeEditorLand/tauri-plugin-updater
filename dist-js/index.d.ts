@@ -46,9 +46,15 @@ declare class Update extends Resource {
     version: string;
     date?: string;
     body?: string;
+    private downloadedBytes?;
     constructor(metadata: UpdateMetadata);
+    /** Download the updater package */
+    download(onEvent?: (progress: DownloadEvent) => void): Promise<void>;
+    /** Install downloaded updater package */
+    install(): Promise<void>;
     /** Downloads the updater package and installs it */
     downloadAndInstall(onEvent?: (progress: DownloadEvent) => void): Promise<void>;
+    close(): Promise<void>;
 }
 /** Check for updates, resolves to `null` if no updates are available */
 declare function check(options?: CheckOptions): Promise<Update | null>;
