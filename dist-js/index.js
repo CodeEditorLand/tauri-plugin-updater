@@ -12,6 +12,30 @@ class Update extends Resource {
         this.date = metadata.date;
         this.body = metadata.body;
     }
+    /** Download the updater package */
+    async download(onEvent) {
+        const channel = new Channel();
+        if (onEvent) {
+            channel.onmessage = onEvent;
+        }
+        const downloadedBytesRid = await invoke("plugin:updater|download", {
+            onEvent: channel,
+            rid: this.rid,
+        });
+        this.downloadedBytes = new Resource(downloadedBytesRid);
+    }
+    /** Install downloaded updater package */
+    async install() {
+        if (!this.downloadedBytes) {
+            throw "Update.install called before Update.download";
+        }
+        await invoke("plugin:updater|install", {
+            updateRid: this.rid,
+            bytesRid: this.downloadedBytes.rid,
+        });
+        // Don't need to call close, we did it in rust side already
+        this.downloadedBytes = undefined;
+    }
     /** Downloads the updater package and installs it */
     async downloadAndInstall(onEvent) {
         const channel = new Channel();
@@ -22,6 +46,10 @@ class Update extends Resource {
             onEvent: channel,
             rid: this.rid,
         });
+    }
+    async close() {
+        await this.downloadedBytes?.close();
+        await super.close();
     }
 }
 /** Check for updates, resolves to `null` if no updates are available */
