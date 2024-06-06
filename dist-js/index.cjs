@@ -29,7 +29,7 @@ class Update extends core.Resource {
     /** Install downloaded updater package */
     async install() {
         if (!this.downloadedBytes) {
-            throw "Update.install called before Update.download";
+            throw new Error("Update.install called before Update.download");
         }
         await core.invoke("plugin:updater|install", {
             updateRid: this.rid,
