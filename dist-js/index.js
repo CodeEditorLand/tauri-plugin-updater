@@ -13,7 +13,7 @@ class Update extends Resource {
         this.body = metadata.body;
     }
     /** Download the updater package */
-    async download(onEvent) {
+    async download(onEvent, options) {
         const channel = new Channel();
         if (onEvent) {
             channel.onmessage = onEvent;
@@ -21,6 +21,7 @@ class Update extends Resource {
         const downloadedBytesRid = await invoke("plugin:updater|download", {
             onEvent: channel,
             rid: this.rid,
+            ...options,
         });
         this.downloadedBytes = new Resource(downloadedBytesRid);
     }
@@ -37,7 +38,7 @@ class Update extends Resource {
         this.downloadedBytes = undefined;
     }
     /** Downloads the updater package and installs it */
-    async downloadAndInstall(onEvent) {
+    async downloadAndInstall(onEvent, options) {
         const channel = new Channel();
         if (onEvent) {
             channel.onmessage = onEvent;
@@ -45,6 +46,7 @@ class Update extends Resource {
         await invoke("plugin:updater|download_and_install", {
             onEvent: channel,
             rid: this.rid,
+            ...options,
         });
     }
     async close() {

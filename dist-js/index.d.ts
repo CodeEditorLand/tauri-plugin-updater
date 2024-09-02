@@ -1,12 +1,12 @@
 import { Resource } from "@tauri-apps/api/core";
-/** Options used to check for updates */
+/** Options used when checking for updates */
 interface CheckOptions {
     /**
      * Request headers
      */
     headers?: HeadersInit;
     /**
-     * Timeout in seconds
+     * Timeout in milliseconds
      */
     timeout?: number;
     /**
@@ -17,6 +17,17 @@ interface CheckOptions {
      * Target identifier for the running application. This is sent to the backend.
      */
     target?: string;
+}
+/** Options used when downloading an update */
+interface DownloadOptions {
+    /**
+     * Request headers
+     */
+    headers?: HeadersInit;
+    /**
+     * Timeout in milliseconds
+     */
+    timeout?: number;
 }
 interface UpdateMetadata {
     rid: number;
@@ -49,14 +60,14 @@ declare class Update extends Resource {
     private downloadedBytes?;
     constructor(metadata: UpdateMetadata);
     /** Download the updater package */
-    download(onEvent?: (progress: DownloadEvent) => void): Promise<void>;
+    download(onEvent?: (progress: DownloadEvent) => void, options?: DownloadOptions): Promise<void>;
     /** Install downloaded updater package */
     install(): Promise<void>;
     /** Downloads the updater package and installs it */
-    downloadAndInstall(onEvent?: (progress: DownloadEvent) => void): Promise<void>;
+    downloadAndInstall(onEvent?: (progress: DownloadEvent) => void, options?: DownloadOptions): Promise<void>;
     close(): Promise<void>;
 }
 /** Check for updates, resolves to `null` if no updates are available */
 declare function check(options?: CheckOptions): Promise<Update | null>;
-export type { CheckOptions, DownloadEvent };
+export type { CheckOptions, DownloadOptions, DownloadEvent };
 export { check, Update };
