@@ -18,21 +18,21 @@ class Update extends Resource {
         if (onEvent) {
             channel.onmessage = onEvent;
         }
-        const downloadedBytesRid = await invoke("plugin:updater|download", {
+        const downloadedBytesRid = await invoke('plugin:updater|download', {
             onEvent: channel,
             rid: this.rid,
-            ...options,
+            ...options
         });
         this.downloadedBytes = new Resource(downloadedBytesRid);
     }
     /** Install downloaded updater package */
     async install() {
         if (!this.downloadedBytes) {
-            throw new Error("Update.install called before Update.download");
+            throw new Error('Update.install called before Update.download');
         }
-        await invoke("plugin:updater|install", {
+        await invoke('plugin:updater|install', {
             updateRid: this.rid,
-            bytesRid: this.downloadedBytes.rid,
+            bytesRid: this.downloadedBytes.rid
         });
         // Don't need to call close, we did it in rust side already
         this.downloadedBytes = undefined;
@@ -43,10 +43,10 @@ class Update extends Resource {
         if (onEvent) {
             channel.onmessage = onEvent;
         }
-        await invoke("plugin:updater|download_and_install", {
+        await invoke('plugin:updater|download_and_install', {
             onEvent: channel,
             rid: this.rid,
-            ...options,
+            ...options
         });
     }
     async close() {
@@ -59,8 +59,8 @@ async function check(options) {
     if (options?.headers) {
         options.headers = Array.from(new Headers(options.headers).entries());
     }
-    return await invoke("plugin:updater|check", {
-        ...options,
+    return await invoke('plugin:updater|check', {
+        ...options
     }).then((meta) => (meta.available ? new Update(meta) : null));
 }
 

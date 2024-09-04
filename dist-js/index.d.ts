@@ -1,4 +1,4 @@
-import { Resource } from "@tauri-apps/api/core";
+import { Resource } from '@tauri-apps/api/core';
 /** Options used when checking for updates */
 interface CheckOptions {
     /**
@@ -39,17 +39,17 @@ interface UpdateMetadata {
 }
 /** Updater download event */
 type DownloadEvent = {
-    event: "Started";
+    event: 'Started';
     data: {
         contentLength?: number;
     };
 } | {
-    event: "Progress";
+    event: 'Progress';
     data: {
         chunkLength: number;
     };
 } | {
-    event: "Finished";
+    event: 'Finished';
 };
 declare class Update extends Resource {
     available: boolean;
