@@ -30,12 +30,12 @@ interface DownloadOptions {
     timeout?: number;
 }
 interface UpdateMetadata {
-	rid: number;
-	available: boolean;
-	currentVersion: string;
-	version: string;
-	date?: string;
-	body?: string;
+    rid: number;
+    available: boolean;
+    currentVersion: string;
+    version: string;
+    date?: string;
+    body?: string;
 }
 /** Updater download event */
 type DownloadEvent = {
