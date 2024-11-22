@@ -62,6 +62,7 @@ declare class Update extends Resource {
 	date?: string;
 	body?: string;
 	private downloadedBytes?;
+
 	constructor(metadata: UpdateMetadata);
 	/** Download the updater package */
 	download(
