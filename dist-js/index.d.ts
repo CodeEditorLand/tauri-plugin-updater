@@ -80,5 +80,7 @@ declare class Update extends Resource {
 }
 /** Check for updates, resolves to `null` if no updates are available */
 declare function check(options?: CheckOptions): Promise<Update | null>;
+
 export type { CheckOptions, DownloadOptions, DownloadEvent };
+
 export { check, Update };
