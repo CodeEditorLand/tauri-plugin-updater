@@ -32,22 +32,29 @@ interface DownloadOptions {
 }
 interface UpdateMetadata {
 	rid: number;
+
 	available: boolean;
+
 	currentVersion: string;
+
 	version: string;
+
 	date?: string;
+
 	body?: string;
 }
 /** Updater download event */
 type DownloadEvent =
 	| {
 			event: "Started";
+
 			data: {
 				contentLength?: number;
 			};
 	  }
 	| {
 			event: "Progress";
+
 			data: {
 				chunkLength: number;
 			};
@@ -57,10 +64,15 @@ type DownloadEvent =
 	  };
 declare class Update extends Resource {
 	available: boolean;
+
 	currentVersion: string;
+
 	version: string;
+
 	date?: string;
+
 	body?: string;
+
 	private downloadedBytes?;
 
 	constructor(metadata: UpdateMetadata);
@@ -76,6 +88,7 @@ declare class Update extends Resource {
 		onEvent?: (progress: DownloadEvent) => void,
 		options?: DownloadOptions,
 	): Promise<void>;
+
 	close(): Promise<void>;
 }
 /** Check for updates, resolves to `null` if no updates are available */
