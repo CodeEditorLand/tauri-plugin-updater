@@ -142,6 +142,7 @@ pub(crate) fn validate_endpoints(
 						 `https` protocol. This is allowed in development but will fail in \
 						 release builds."
 					);
+
 					eprintln!(
 						"[\x1b[33mWARNING\x1b[0m] if this is a desired behavior, you can enable \
 						 `dangerousInsecureTransportProtocol` in the plugin configuration"
