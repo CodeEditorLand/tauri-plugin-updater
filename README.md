@@ -82,6 +82,8 @@ if (update?.available) {
 }
 ```
 
+Note that for these APIs to work you have to properly configure the updater first and generate updater artifacts. Please refer to the [guide on our website](https://v2.tauri.app/plugin/updater/) for this.
+
 ## Contributing
 
 PRs accepted. Please make sure to read the Contributing Guide before making a pull request.
