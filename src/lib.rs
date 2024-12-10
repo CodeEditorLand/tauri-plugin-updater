@@ -11,8 +11,9 @@
     html_favicon_url = "https://github.com/tauri-apps/tauri/raw/dev/app-icon.png"
 )]
 
-use std::ffi::OsString;
+use std::{ffi::OsString, sync::Arc};
 
+use semver::Version;
 use tauri::{
     plugin::{Builder as PluginBuilder, TauriPlugin},
     Manager, Runtime,
@@ -69,7 +70,11 @@ impl<R: Runtime, T: Manager<R>> UpdaterExt<R> for T {
     fn updater_builder(&self) -> UpdaterBuilder {
         let app = self.app_handle();
         let package_info = app.package_info();
-        let UpdaterState { config, target } = self.state::<UpdaterState>().inner();
+        let UpdaterState {
+            config,
+            target,
+            version_comparator,
+        } = self.state::<UpdaterState>().inner();
 
         let mut builder = UpdaterBuilder::new(
             package_info.name.clone(),
@@ -85,6 +90,8 @@ impl<R: Runtime, T: Manager<R>> UpdaterExt<R> for T {
         if !args.is_empty() {
             builder = builder.current_exe_args(args);
         }
+
+        builder.version_comparator = version_comparator.clone();
 
         #[cfg(any(
             target_os = "linux",
@@ -116,6 +123,7 @@ impl<R: Runtime, T: Manager<R>> UpdaterExt<R> for T {
 struct UpdaterState {
     target: Option<String>,
     config: Config,
+    version_comparator: Option<VersionComparator>,
 }
 
 #[derive(Default)]
@@ -123,6 +131,7 @@ pub struct Builder {
     target: Option<String>,
     pubkey: Option<String>,
     installer_args: Vec<OsString>,
+    default_version_comparator: Option<VersionComparator>,
 }
 
 impl Builder {
@@ -163,9 +172,20 @@ impl Builder {
         self
     }
 
+    pub fn default_version_comparator<
+        F: Fn(Version, RemoteRelease) -> bool + Send + Sync + 'static,
+    >(
+        mut self,
+        f: F,
+    ) -> Self {
+        self.default_version_comparator.replace(Arc::new(f));
+        self
+    }
+
     pub fn build<R: Runtime>(self) -> TauriPlugin<R, Config> {
         let pubkey = self.pubkey;
         let target = self.target;
+        let version_comparator = self.default_version_comparator;
         let installer_args = self.installer_args;
         PluginBuilder::<R, Config>::new("updater")
             .setup(move |app, api| {
@@ -176,7 +196,11 @@ impl Builder {
                 if let Some(windows) = &mut config.windows {
                     windows.installer_args.extend_from_slice(&installer_args);
                 }
-                app.manage(UpdaterState { target, config });
+                app.manage(UpdaterState {
+                    target,
+                    config,
+                    version_comparator,
+                });
                 Ok(())
             })
             .invoke_handler(tauri::generate_handler![
