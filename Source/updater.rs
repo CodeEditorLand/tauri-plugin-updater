@@ -1331,10 +1331,10 @@ mod tests {
 			"--flag",
 			"--empty=",
 			"--arg=value",
-			"some space",                     // This simulates `./my-app "some string"`.
-			"--arg value",                    /* -> This simulates `./my-app "--arg value"`.
-			                                   * Same as above but it triggers the
-			                                   * startsWith(`-`) logic. */
+			"some space", // This simulates `./my-app "some string"`.
+			"--arg value", /* -> This simulates `./my-app "--arg value"`.
+			               * Same as above but it triggers the
+			               * startsWith(`-`) logic. */
 			"--arg=unwrapped space",          // `./my-app --arg="unwrapped space"`
 			"--arg=\"wrapped\"",              // `./my-app --args=""wrapped""`
 			"--arg=\"wrapped space\"",        // `./my-app --args=""wrapped space""`
